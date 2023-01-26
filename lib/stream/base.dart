@@ -1,4 +1,4 @@
-part of '../cables.dart';
+part of '../kablo.dart';
 
 mixin Input<T> implements StreamSink<T> {
   final StreamController<T> _input = StreamController.broadcast();

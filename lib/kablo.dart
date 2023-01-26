@@ -1,4 +1,4 @@
-library cables;
+library kablo;
 
 import 'dart:async';
 import 'package:flutter/material.dart';

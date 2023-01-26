@@ -1,4 +1,4 @@
-part of '../cables.dart';
+part of '../kablo.dart';
 
 mixin InputCounter<T> on Input<T> {
   int inputCount = 0;

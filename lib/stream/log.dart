@@ -1,4 +1,4 @@
-part of '../cables.dart';
+part of '../kablo.dart';
 
 enum LogLevel { all, config, info, warning, severe, shout, off }
 

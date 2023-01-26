@@ -1,4 +1,4 @@
-part of '../cables.dart';
+part of '../kablo.dart';
 
 extension SnapshotExtension<T> on Stream<T> {
   Snapshot<T> asSnapshot() => Snapshot()..addStream(this);

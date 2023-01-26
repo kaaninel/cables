@@ -1,4 +1,4 @@
-part of '../cables.dart';
+part of '../kablo.dart';
 
 Widget noDataDefault(BuildContext ctx, void value, Widget? child) =>
     Container();

@@ -1,4 +1,4 @@
-part of '../cables.dart';
+part of '../kablo.dart';
 
 mixin Waiter<T> on Stream<T> {
   int _waiterPending = 0;

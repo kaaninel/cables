@@ -1,4 +1,4 @@
-part of '../cables.dart';
+part of '../kablo.dart';
 
 class Aggragate<K, V> extends Stream<Map<K, V>>
     with
