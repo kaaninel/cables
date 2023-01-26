@@ -1,0 +1,21 @@
+name: cables
+description: Stream focused state management library.
+version: 1.0.0
+homepage: https://github.com/kaaninel/cables
+
+environment:
+  sdk: ">=2.18.6 <3.0.0"
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  stream_transform: ^2.1.0
+  async: ^2.9.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+flutter:
