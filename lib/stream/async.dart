@@ -9,7 +9,7 @@ mixin Waiter<T> on Stream<T> {
     task.whenComplete(() => _waiterPendings.add(--_waiterPending));
   }
 
-  StreamSubscription<T> _initWaiter(StreamSubscription<T> sub) {
+  StreamSubscription<T> initWaiter(StreamSubscription<T> sub) {
     _waiterPendings.stream.forEach((element) {
       if (element > 0) {
         sub.pause();

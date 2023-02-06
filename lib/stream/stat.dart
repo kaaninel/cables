@@ -5,7 +5,7 @@ mixin InputCounter<T> on Input<T> {
   final StreamController<int> _inputCount = StreamController<int>();
   Stream<int> get inputCounts => _inputCount.stream;
 
-  void _initInputCounter() =>
+  void initInputCounter() =>
       _input.stream.map((_) => ++inputCount).forEach(_inputCount.add);
 }
 mixin OutputCounter<T> on Output<T> {
@@ -13,7 +13,7 @@ mixin OutputCounter<T> on Output<T> {
   final StreamController<int> _outputCount = StreamController<int>();
   Stream<int> get outputCounts => _outputCount.stream;
 
-  void _initOutputCounter() =>
+  void initOutputCounter() =>
       _output.stream.map((_) => ++outputCount).forEach(_outputCount.add);
 }
 
@@ -23,7 +23,7 @@ mixin Lag<T> on InputCounter<T>, OutputCounter<T>, Passthrough<T> {
   int get lag => _lag;
   Stream<int> get lags => _lags.stream;
 
-  void _initLag() => inputCounts
+  void initLag() => inputCounts
       .merge(outputCounts)
       .map((_) => _lag = inputCount - outputCount)
       .forEach(_lags.add);
@@ -40,10 +40,10 @@ class Pipe<T> extends Stream<T>
         Lag<T>,
         Output<T> {
   Pipe({List<LogConfig<T>>? loggers}) {
-    _initInputCounter();
-    _initOutputCounter();
-    _initLag();
+    initInputCounter();
+    initOutputCounter();
+    initLag();
     if (loggers != null) loggers.forEach(addLogger);
-    _initPassthrough();
+    initPassthrough();
   }
 }

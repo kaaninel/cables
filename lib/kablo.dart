@@ -1,6 +1,7 @@
 library kablo;
 
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:stream_transform/stream_transform.dart';
 import 'package:async/async.dart';

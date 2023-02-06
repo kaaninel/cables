@@ -52,8 +52,10 @@ AsyncWidgetBuilder<T> asyncBuilder<T>({
   Widget? child,
 }) {
   return (context, AsyncSnapshot<T> snapshot) {
-    print('error: ${snapshot.error}');
-    print('data: ${snapshot.data}');
+    if (kDebugMode) {
+      print('error: ${snapshot.error}');
+      print('data: ${snapshot.data}');
+    }
     if (snapshot.hasError) {
       return error(FlutterErrorDetails(exception: snapshot.error!));
     } else if (snapshot.connectionState == ConnectionState.waiting) {

@@ -12,9 +12,9 @@ class Aggragate<K, V> extends Stream<Map<K, V>>
         CacheOutput<Map<K, V>> {
   Aggragate({List<LogConfig<MapEntry<K, V?>>>? loggers}) {
     if (loggers != null) loggers.forEach(addLogger);
-    _initOutputCounter();
-    _initCacheOutput();
-    _initWaiter(_initAggragate().listen(_output.add));
+    initOutputCounter();
+    initCacheOutput();
+    initWaiter(_initAggragate().listen(_output.add));
   }
 
   Stream<Map<K, V>> _initAggragate() =>
@@ -52,9 +52,9 @@ class Merge<T> extends Stream<T>
         Logger<T> {
   Merge({List<LogConfig<T>>? loggers}) {
     if (loggers != null) loggers.forEach(addLogger);
-    _initInputCounter();
-    _initOutputCounter();
-    _initWaiter(_initPassthrough());
+    initInputCounter();
+    initOutputCounter();
+    initWaiter(initPassthrough());
   }
 
   final FutureGroup<void> _blockers = FutureGroup<void>();
@@ -88,10 +88,10 @@ class GroupBy<K, V> extends Stream<Map<K, List<V>>>
   final Stream<K> Function(V e) builder;
   GroupBy({List<LogConfig<V>>? loggers, required this.builder}) {
     if (loggers != null) loggers.forEach(addLogger);
-    _initInputCounter();
-    _initCacheOutput();
-    _initWaiter(_merger.listen(_output.add));
-    _initGroupBy();
+    initInputCounter();
+    initCacheOutput();
+    initWaiter(_merger.listen(_output.add));
+    initGroupBy();
   }
 
   final Merge<Map<K, List<V>>> _merger = Merge();
@@ -100,7 +100,7 @@ class GroupBy<K, V> extends Stream<Map<K, List<V>>>
   final Map<V, K> _reverseLookupTable = {};
   final Map<K, V> _lookupTable = {};
 
-  void _initGroupBy() =>
+  void initGroupBy() =>
       _input.stream.map(_builderStream).forEach(_merger.addSource);
 
   final Map<V, Stream<K>> _streams = {};

@@ -35,5 +35,13 @@ mixin Output<T> on Stream<T> {
 }
 
 mixin Passthrough<T> on Input<T>, Output<T> {
-  StreamSubscription<T> _initPassthrough() => _input.stream.listen(_output.add);
+  StreamSubscription<T> initPassthrough() => _input.stream.listen(_output.add);
+}
+
+mixin Processor<T, Q> on Input<T>, Output<Q> {
+  StreamSubscription<Q> initProcessor() => _input.stream
+      .transform(StreamTransformer.fromBind(processor))
+      .listen(_output.add);
+
+  Stream<Q> processor(Stream<T> input);
 }

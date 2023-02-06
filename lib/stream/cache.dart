@@ -14,14 +14,14 @@ mixin CacheInput<T> on Input<T>, ValueCache<T> {
   @override
   Future<T> get firstNotNull => _input.stream.where((e) => e != null).first;
 
-  void _initCacheInput() => _input.stream.forEach((e) => value = e);
+  void initCacheInput() => _input.stream.forEach((e) => value = e);
 }
 
 mixin CacheOutput<T> on Output<T>, ValueCache<T> {
   @override
   Future<T> get firstNotNull => where((e) => e != null).first;
 
-  void _initCacheOutput() => _output.stream.forEach((e) => value = e);
+  void initCacheOutput() => _output.stream.forEach((e) => value = e);
 }
 
 mixin HasDataInput<T> on ValueCache<T>, InputCounter<T> {
@@ -41,8 +41,8 @@ class Snapshot<T> extends Stream<T?>
         InputCounter<T?>,
         HasDataInput<T?> {
   Snapshot({List<LogConfig<T>>? loggers}) {
-    _initInputCounter();
-    _initCacheInput();
+    initInputCounter();
+    initCacheInput();
     if (loggers != null) loggers.forEach(addLogger);
   }
 
