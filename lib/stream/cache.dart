@@ -35,6 +35,8 @@ mixin HasDataOutput<T> on ValueCache<T>, OutputCounter<T> {
 class Snapshot<T> extends Stream<T?>
     with
         Input<T?>,
+        Output<T?>,
+        Processor<T?, T?>,
         Logger<T?>,
         ValueCache<T?>,
         CacheInput<T?>,
@@ -43,6 +45,7 @@ class Snapshot<T> extends Stream<T?>
   Snapshot({List<LogConfig<T>>? loggers}) {
     initInputCounter();
     initCacheInput();
+    initProcessor();
     if (loggers != null) loggers.forEach(addLogger);
   }
 
@@ -59,9 +62,15 @@ class Snapshot<T> extends Stream<T?>
   }
 
   @override
-  StreamSubscription<T?> listen(void Function(T? event)? onData,
-      {Function? onError, void Function()? onDone, bool? cancelOnError}) {
-    return output.listen(onData,
-        onDone: onDone, onError: onError, cancelOnError: cancelOnError);
+  Stream<T?> processor(Stream<T?> input) async* {
+    yield value;
+    yield* input;
   }
+
+  // @override
+  // StreamSubscription<T?> listen(void Function(T? event)? onData,
+  //     {Function? onError, void Function()? onDone, bool? cancelOnError}) {
+  //   return output.listen(onData,
+  //       onDone: onDone, onError: onError, cancelOnError: cancelOnError);
+  // }
 }

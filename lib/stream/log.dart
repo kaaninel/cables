@@ -2,29 +2,51 @@ part of '../kablo.dart';
 
 enum LogLevel { all, config, info, warning, severe, shout, off }
 
-class LogConfig<T> {
+abstract class LogConfig<T> {
   final String name;
   final LogLevel level;
-  final String Function(T obj)? formatter;
-  final bool Function(T obj)? condition;
 
-  const LogConfig({
-    required this.name,
-    this.level = LogLevel.info,
+  const LogConfig({required this.name, this.level = LogLevel.info});
+
+  void onLog(T? obj);
+}
+
+typedef Formatter<T, Q> = Q Function(T? obj);
+typedef Condition<T> = bool Function(T? obj);
+
+class PrintLog<T> extends LogConfig<T> {
+  final Formatter<T, String>? formatter;
+  final Condition<T>? condition;
+
+  final bool debugOnly;
+
+  const PrintLog({
+    required super.name,
     this.formatter,
     this.condition,
+    this.debugOnly = true,
   });
+
+  @override
+  void onLog(T? obj) {
+    if (condition == null || condition!(obj)) {
+      if (!debugOnly || kDebugMode) {
+        // ignore: avoid_print
+        print(formatter != null ? formatter!(obj) : obj.toString());
+      }
+    }
+  }
+}
+
+class InspectLog<T> extends LogConfig<T> {
+  const InspectLog({required super.name});
+
+  @override
+  void onLog(T? obj) {
+    inspect(obj);
+  }
 }
 
 mixin Logger<T> on Input<T> {
-  static String defaultFormatter<T>(T obj) => obj.toString();
-  static bool defaultCondition<T>(T obj) => true;
-  static void defaultAction<T>(LogConfig<T> config, T obj) =>
-      // ignore: avoid_print
-      print('${config.name} - $obj');
-
-  void addLogger(LogConfig<T> config) => _input.stream
-      .where(config.condition ?? defaultCondition)
-      .map(config.formatter ?? defaultFormatter)
-      .forEach((msg) => defaultAction(config, msg));
+  void addLogger(LogConfig<T> config) => _input.stream.forEach(config.onLog);
 }
