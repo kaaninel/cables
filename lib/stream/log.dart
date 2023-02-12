@@ -13,10 +13,12 @@ abstract class LogConfig<T> {
 
 typedef Formatter<T, Q> = Q Function(T? obj);
 typedef Condition<T> = bool Function(T? obj);
+typedef Sequencer<T> = int? Function(T? obj);
 
 class PrintLog<T> extends LogConfig<T> {
   final Formatter<T, String>? formatter;
   final Condition<T>? condition;
+  final Sequencer<T>? sequencer;
 
   final bool debugOnly;
 
@@ -24,15 +26,18 @@ class PrintLog<T> extends LogConfig<T> {
     required super.name,
     this.formatter,
     this.condition,
+    this.sequencer,
     this.debugOnly = true,
   });
 
+  String format(T? obj) => formatter != null ? formatter!(obj) : obj.toString();
+
   @override
   void onLog(T? obj) {
+    final seq = sequencer != null ? sequencer!(obj) : null;
     if (condition == null || condition!(obj)) {
       if (!debugOnly || kDebugMode) {
-        // ignore: avoid_print
-        print(formatter != null ? formatter!(obj) : obj.toString());
+        log(format(obj), time: DateTime.now(), sequenceNumber: seq, name: name);
       }
     }
   }
