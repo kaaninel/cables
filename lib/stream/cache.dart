@@ -66,11 +66,4 @@ class Snapshot<T> extends Stream<T?>
     yield value;
     yield* input;
   }
-
-  // @override
-  // StreamSubscription<T?> listen(void Function(T? event)? onData,
-  //     {Function? onError, void Function()? onDone, bool? cancelOnError}) {
-  //   return output.listen(onData,
-  //       onDone: onDone, onError: onError, cancelOnError: cancelOnError);
-  // }
 }

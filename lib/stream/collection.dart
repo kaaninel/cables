@@ -9,23 +9,25 @@ class Aggragate<K, V> extends Stream<Map<K, V>>
         Logger<MapEntry<K, V?>>,
         ValueCache<Map<K, V>>,
         HasDataOutput<Map<K, V>>,
-        CacheOutput<Map<K, V>> {
+        CacheOutput<Map<K, V>>,
+        Processor<MapEntry<K, V?>, Map<K, V>> {
   Aggragate({List<LogConfig<MapEntry<K, V?>>>? loggers}) {
     if (loggers != null) loggers.forEach(addLogger);
     initOutputCounter();
     initCacheOutput();
-    initWaiter(_initAggragate().listen(_output.add));
+    initWaiter(initProcessor());
   }
-
-  Stream<Map<K, V>> _initAggragate() =>
-      _input.stream.map(_apply).map((_) => _state);
-
   final Map<K, V> _state = {};
-  void _apply(MapEntry<K, V?> entry) {
-    if (entry.value == null) {
-      _state.remove(entry.key);
-    } else {
-      _state[entry.key] = entry.value as V;
+
+  @override
+  Stream<Map<K, V>> processor(Stream<MapEntry<K, V?>> input) async* {
+    await for (final entry in input) {
+      if (entry.value == null) {
+        _state.remove(entry.key);
+      } else {
+        _state[entry.key] = entry.value as V;
+      }
+      yield _state;
     }
   }
 
