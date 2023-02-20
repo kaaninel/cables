@@ -12,16 +12,17 @@ mixin ValueCache<T> {
 
 mixin CacheInput<T> on Input<T>, ValueCache<T> {
   @override
-  Future<T> get firstNotNull => _input.stream.where((e) => e != null).first;
+  Future<T> get firstNotNull =>
+      inputStream.stream.where((e) => e != null).first;
 
-  void initCacheInput() => _input.stream.forEach((e) => value = e);
+  void initCacheInput() => inputStream.stream.forEach((e) => value = e);
 }
 
 mixin CacheOutput<T> on Output<T>, ValueCache<T> {
   @override
   Future<T> get firstNotNull => where((e) => e != null).first;
 
-  void initCacheOutput() => _output.stream.forEach((e) => value = e);
+  void initCacheOutput() => outputStream.stream.forEach((e) => value = e);
 }
 
 mixin HasDataInput<T> on ValueCache<T>, InputCounter<T> {
@@ -58,12 +59,43 @@ class Snapshot<T> extends Stream<T?>
 
   Stream<T?> get output async* {
     yield value;
-    yield* _input.stream;
+    yield* inputStream.stream;
   }
 
   @override
   Stream<T?> processor(Stream<T?> input) async* {
     yield value;
+    yield* input;
+  }
+}
+
+class Point<T> extends Stream<T>
+    with
+        Input<T>,
+        Output<T>,
+        Processor<T, T>,
+        Logger<T>,
+        ValueCache<T>,
+        CacheInput<T>,
+        InputCounter<T>,
+        HasDataInput<T> {
+  final T defaultValue;
+  Point(this.defaultValue, {List<LogConfig<T>>? loggers}) {
+    initInputCounter();
+    initCacheInput();
+    initProcessor();
+    if (loggers != null) loggers.forEach(addLogger);
+    value = defaultValue;
+  }
+
+  Stream<T> get output async* {
+    yield value ?? defaultValue;
+    yield* inputStream.stream;
+  }
+
+  @override
+  Stream<T> processor(Stream<T> input) async* {
+    yield value ?? defaultValue;
     yield* input;
   }
 }

@@ -1,27 +1,27 @@
 part of '../kablo.dart';
 
 mixin Input<T> implements StreamSink<T> {
-  final StreamController<T> _input = StreamController.broadcast();
+  final StreamController<T> inputStream = StreamController.broadcast();
 
   @override
-  void add(T event) => _input.add(event);
+  void add(T event) => inputStream.add(event);
 
   @override
   void addError(Object error, [StackTrace? stackTrace]) =>
-      _input.addError(error, stackTrace);
+      inputStream.addError(error, stackTrace);
 
   @override
   Future<void> addStream(Stream<T> stream) => stream.forEach(add);
 
   @override
-  Future<void> close() => _input.close();
+  Future<void> close() => inputStream.close();
 
   @override
-  Future<void> get done => _input.done;
+  Future<void> get done => inputStream.done;
 }
 
 mixin Output<T> on Stream<T> {
-  final StreamController<T> _output = StreamController.broadcast();
+  final StreamController<T> outputStream = StreamController.broadcast();
 
   @override
   StreamSubscription<T> listen(
@@ -30,18 +30,24 @@ mixin Output<T> on Stream<T> {
     void Function()? onDone,
     bool? cancelOnError,
   }) =>
-      _output.stream.listen(onData,
+      outputStream.stream.listen(onData,
           onError: onError, onDone: onDone, cancelOnError: cancelOnError);
 }
 
 mixin Passthrough<T> on Input<T>, Output<T> {
-  StreamSubscription<T> initPassthrough() => _input.stream.listen(_output.add);
+  StreamSubscription<T> initPassthrough() =>
+      inputStream.stream.listen(outputStream.add);
 }
 
 mixin Processor<T, Q> on Input<T>, Output<Q> {
-  StreamSubscription<Q> initProcessor() => _input.stream
+  StreamSubscription<Q> initProcessor() => inputStream.stream
       .transform(StreamTransformer.fromBind(processor))
-      .listen(_output.add);
+      .listen(outputStream.add);
 
   Stream<Q> processor(Stream<T> input);
+}
+
+mixin Listener<T> on Input<T> {
+  void initListener() => listener(inputStream.stream);
+  void listener(Stream<T> input);
 }

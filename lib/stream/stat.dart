@@ -6,7 +6,7 @@ mixin InputCounter<T> on Input<T> {
   Stream<int> get inputCounts => _inputCount.stream;
 
   void initInputCounter() =>
-      _input.stream.map((_) => ++inputCount).forEach(_inputCount.add);
+      inputStream.stream.map((_) => ++inputCount).forEach(_inputCount.add);
 }
 mixin OutputCounter<T> on Output<T> {
   int outputCount = 0;
@@ -14,7 +14,7 @@ mixin OutputCounter<T> on Output<T> {
   Stream<int> get outputCounts => _outputCount.stream;
 
   void initOutputCounter() =>
-      _output.stream.map((_) => ++outputCount).forEach(_outputCount.add);
+      outputStream.stream.map((_) => ++outputCount).forEach(_outputCount.add);
 }
 
 mixin Lag<T> on InputCounter<T>, OutputCounter<T>, Passthrough<T> {

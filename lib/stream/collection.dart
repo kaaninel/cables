@@ -65,7 +65,7 @@ class Merge<T> extends Stream<T>
       {bool blocking = false, bool wait = true}) async {
     if (blocking) {
       if (wait && !_blockers.isIdle) await _blockers.onIdle.first;
-      _blockers.add(_input.addStream(source));
+      _blockers.add(inputStream.addStream(source));
     } else {
       addStream(source);
     }
@@ -92,7 +92,7 @@ class GroupBy<K, V> extends Stream<Map<K, List<V>>>
     if (loggers != null) loggers.forEach(addLogger);
     initInputCounter();
     initCacheOutput();
-    initWaiter(_merger.listen(_output.add));
+    initWaiter(_merger.listen(outputStream.add));
     initGroupBy();
   }
 
@@ -103,7 +103,7 @@ class GroupBy<K, V> extends Stream<Map<K, List<V>>>
   final Map<K, V> _lookupTable = {};
 
   void initGroupBy() =>
-      _input.stream.map(_builderStream).forEach(_merger.addSource);
+      inputStream.stream.map(_builderStream).forEach(_merger.addSource);
 
   final Map<V, Stream<K>> _streams = {};
   Stream<Map<K, List<V>>> _builderStream(V obj) {
