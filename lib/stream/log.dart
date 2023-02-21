@@ -52,7 +52,12 @@ class InspectLog<T> extends LogConfig<T> {
   }
 }
 
-mixin Logger<T> on Input<T> {
-  void addLogger(LogConfig<T> config) =>
+mixin InputLogger<T> on Input<T> {
+  void inputLogger(LogConfig<T> config) =>
       inputStream.stream.forEach(config.onLog);
+}
+
+mixin OutputLogger<T> on Output<T> {
+  void outputLogger(LogConfig<T> config) =>
+      outputStream.stream.forEach(config.onLog);
 }

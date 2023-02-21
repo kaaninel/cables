@@ -3,24 +3,27 @@ part of '../kablo.dart';
 class Aggragate<K, V> extends Stream<Map<K, V>>
     with
         Input<MapEntry<K, V?>>,
-        Output<Map<K, V>>,
-        OutputCounter<Map<K, V>>,
-        Waiter<Map<K, V>>,
-        Logger<MapEntry<K, V?>>,
+        Disposable,
+        Output,
+        OutputCounter,
+        Waiter,
+        InputLogger,
         ValueCache<Map<K, V>>,
-        HasDataOutput<Map<K, V>>,
-        CacheOutput<Map<K, V>>,
-        Processor<MapEntry<K, V?>, Map<K, V>> {
+        HasDataOutput,
+        CacheOutput,
+        Processor {
   Aggragate({List<LogConfig<MapEntry<K, V?>>>? loggers}) {
-    if (loggers != null) loggers.forEach(addLogger);
+    if (loggers != null) loggers.forEach(inputLogger);
     initOutputCounter();
     initCacheOutput();
-    initWaiter(initProcessor());
+    initDisposable();
+    initWaiter(initProcessor().inputSub);
   }
-  final Map<K, V> _state = {};
+
+  Map<K, V> _state = {};
 
   @override
-  Stream<Map<K, V>> processor(Stream<MapEntry<K, V?>> input) async* {
+  processor(input) async* {
     await for (final entry in input) {
       if (entry.value == null) {
         _state.remove(entry.key);
@@ -34,6 +37,8 @@ class Aggragate<K, V> extends Stream<Map<K, V>>
   Stream<List<V>> asList() => map((event) => event.values.toList());
   Stream<Set<V>> asSet() => map((event) => event.values.toSet());
 
+  void clear() => _state = {};
+
   static Aggragate<int, V> fromStreams<V>(List<Stream<V>> streams) {
     var collector = Aggragate<int, V>();
     StreamGroup.merge(streams.asMap().entries.map(
@@ -41,19 +46,24 @@ class Aggragate<K, V> extends Stream<Map<K, V>>
         .forEach(collector.add);
     return collector;
   }
+
+  @override
+  void dispose() {
+    disposeProcessor();
+  }
 }
 
 class Merge<T> extends Stream<T>
     with
         Input<T>,
-        Output<T>,
-        InputCounter<T>,
-        OutputCounter<T>,
-        Passthrough<T>,
-        Waiter<T>,
-        Logger<T> {
+        Output,
+        InputCounter,
+        OutputCounter,
+        Passthrough,
+        Waiter,
+        InputLogger {
   Merge({List<LogConfig<T>>? loggers}) {
-    if (loggers != null) loggers.forEach(addLogger);
+    if (loggers != null) loggers.forEach(inputLogger);
     initInputCounter();
     initOutputCounter();
     initWaiter(initPassthrough());
@@ -81,15 +91,15 @@ class Merge<T> extends Stream<T>
 class GroupBy<K, V> extends Stream<Map<K, List<V>>>
     with
         Input<V>,
-        Output<Map<K, List<V>>>,
-        InputCounter<V>,
-        Logger<V>,
+        Output,
+        InputCounter,
+        InputLogger,
         ValueCache<Map<K, List<V>>>,
-        CacheOutput<Map<K, List<V>>>,
-        Waiter<Map<K, List<V>>> {
+        CacheOutput,
+        Waiter {
   final Stream<K> Function(V e) builder;
   GroupBy({List<LogConfig<V>>? loggers, required this.builder}) {
-    if (loggers != null) loggers.forEach(addLogger);
+    if (loggers != null) loggers.forEach(inputLogger);
     initInputCounter();
     initCacheOutput();
     initWaiter(_merger.listen(outputStream.add));

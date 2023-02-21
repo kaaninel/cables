@@ -35,19 +35,47 @@ mixin Output<T> on Stream<T> {
 }
 
 mixin Passthrough<T> on Input<T>, Output<T> {
-  StreamSubscription<T> initPassthrough() =>
-      inputStream.stream.listen(outputStream.add);
+  late StreamSubscription<T> _passthroughSubscription;
+  StreamSubscription<T> initPassthrough() {
+    _passthroughSubscription = inputStream.stream.listen(outputStream.add);
+    return _passthroughSubscription;
+  }
+
+  void disposePassthrough() {
+    _passthroughSubscription.cancel();
+  }
 }
 
-mixin Processor<T, Q> on Input<T>, Output<Q> {
-  StreamSubscription<Q> initProcessor() => inputStream.stream
-      .transform(StreamTransformer.fromBind(processor))
-      .listen(outputStream.add);
+mixin Disposable<T> on Input<T> {
+  void initDisposable() => inputStream.done.then((value) => dispose());
+
+  void dispose();
+}
+
+class DuplexSubscription<T, Q> {
+  final StreamSubscription<T> inputSub;
+  final StreamSubscription<Q> outputSub;
+
+  const DuplexSubscription(this.inputSub, this.outputSub);
+}
+
+mixin Processor<T, Q> on Input<T>, Disposable<T>, Output<Q> {
+  late DuplexSubscription<T, Q> _processorSubscription;
+  DuplexSubscription<T, Q> initProcessor() {
+    final controller = StreamController<T>();
+    final inputSub = inputStream.stream.listen(controller.add,
+        onDone: controller.close, onError: controller.addError);
+    final outputSub = controller.stream
+        .transform(StreamTransformer.fromBind(processor))
+        .listen(outputStream.add);
+    _processorSubscription = DuplexSubscription(inputSub, outputSub);
+    return _processorSubscription;
+  }
+
+  void disposeProcessor() {
+    _processorSubscription.inputSub.cancel();
+    _processorSubscription.outputSub.cancel();
+  }
 
   Stream<Q> processor(Stream<T> input);
-}
-
-mixin Listener<T> on Input<T> {
-  void initListener() => listener(inputStream.stream);
-  void listener(Stream<T> input);
 }

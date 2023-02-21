@@ -36,14 +36,14 @@ class Pipe<T> extends Stream<T>
         Passthrough<T>,
         InputCounter<T>,
         OutputCounter<T>,
-        Logger<T>,
+        InputLogger<T>,
         Lag<T>,
         Output<T> {
   Pipe({List<LogConfig<T>>? loggers}) {
     initInputCounter();
     initOutputCounter();
     initLag();
-    if (loggers != null) loggers.forEach(addLogger);
+    if (loggers != null) loggers.forEach(inputLogger);
     initPassthrough();
   }
 }
