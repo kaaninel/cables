@@ -1,5 +1,25 @@
 part of '../kablo.dart';
 
+mixin StateValue<T, Q> on Output<Q>, Disposable<T> {
+  abstract Q value;
+
+  late final StreamSubscription<Q> _stateSub;
+  StreamSubscription<Q> initState() {
+    return _stateSub = outputStream.stream.listen((event) {
+      value = event;
+    });
+  }
+
+  void disposeState() {
+    _stateSub.cancel();
+  }
+
+  Stream<Q> get output async* {
+    yield value;
+    yield* this;
+  }
+}
+
 mixin ValueCache<T> {
   T? value;
 
@@ -49,17 +69,19 @@ class Snapshot<T> extends Point<T?>
 class Point<T> extends Stream<T>
     with
         Input<T>,
-        Disposable<T>,
-        Output<T>,
-        Processor<T, T>,
-        InputLogger<T>,
-        OutputLogger<T> {
+        Output,
+        Disposable,
+        StateValue,
+        Processor,
+        InputLogger,
+        OutputLogger {
+  @override
   T value;
 
   Point(this.value, {List<LogConfig<T>>? loggers}) {
     initProcessor();
     initDisposable();
-    if (loggers != null) loggers.forEach(outputLogger);
+    if (kDebugMode && loggers != null) loggers.forEach(outputLogger);
   }
 
   Pipe<T> whereNotNull() =>
@@ -67,11 +89,6 @@ class Point<T> extends Stream<T>
 
   Pipe<void> whereNull() =>
       Pipe<void>()..addStream(where((event) => event == null).cast<void>());
-
-  Stream<T> get output async* {
-    yield value;
-    yield* inputStream.stream;
-  }
 
   @override
   Stream<T> processor(Stream<T> input) async* {

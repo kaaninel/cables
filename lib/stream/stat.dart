@@ -43,7 +43,7 @@ class Pipe<T> extends Stream<T>
     initInputCounter();
     initOutputCounter();
     initLag();
-    if (loggers != null) loggers.forEach(inputLogger);
+    if (kDebugMode && loggers != null) loggers.forEach(inputLogger);
     initPassthrough();
   }
 }

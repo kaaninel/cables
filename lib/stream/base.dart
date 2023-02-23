@@ -35,7 +35,7 @@ mixin Output<T> on Stream<T> {
 }
 
 mixin Passthrough<T> on Input<T>, Output<T> {
-  late StreamSubscription<T> _passthroughSubscription;
+  late final StreamSubscription<T> _passthroughSubscription;
   StreamSubscription<T> initPassthrough() {
     _passthroughSubscription = inputStream.stream.listen(outputStream.add);
     return _passthroughSubscription;
@@ -60,7 +60,7 @@ class DuplexSubscription<T, Q> {
 }
 
 mixin Processor<T, Q> on Input<T>, Disposable<T>, Output<Q> {
-  late DuplexSubscription<T, Q> _processorSubscription;
+  late final DuplexSubscription<T, Q> _processorSubscription;
   DuplexSubscription<T, Q> initProcessor() {
     final controller = StreamController<T>();
     final inputSub = inputStream.stream.listen(controller.add,

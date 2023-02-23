@@ -10,6 +10,7 @@ import 'package:async/async.dart';
 export 'dart:async';
 export 'package:async/async.dart';
 export 'package:stream_transform/stream_transform.dart';
+export 'controller.dart';
 
 part 'stream/base.dart';
 part 'stream/log.dart';

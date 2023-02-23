@@ -13,7 +13,7 @@ class Aggragate<K, V> extends Stream<Map<K, V>>
         CacheOutput,
         Processor {
   Aggragate({List<LogConfig<MapEntry<K, V?>>>? loggers}) {
-    if (loggers != null) loggers.forEach(inputLogger);
+    if (kDebugMode && loggers != null) loggers.forEach(inputLogger);
     initOutputCounter();
     initCacheOutput();
     initDisposable();
@@ -63,7 +63,7 @@ class Merge<T> extends Stream<T>
         Waiter,
         InputLogger {
   Merge({List<LogConfig<T>>? loggers}) {
-    if (loggers != null) loggers.forEach(inputLogger);
+    if (kDebugMode && loggers != null) loggers.forEach(inputLogger);
     initInputCounter();
     initOutputCounter();
     initWaiter(initPassthrough());
@@ -99,7 +99,7 @@ class GroupBy<K, V> extends Stream<Map<K, List<V>>>
         Waiter {
   final Stream<K> Function(V e) builder;
   GroupBy({List<LogConfig<V>>? loggers, required this.builder}) {
-    if (loggers != null) loggers.forEach(inputLogger);
+    if (kDebugMode && loggers != null) loggers.forEach(inputLogger);
     initInputCounter();
     initCacheOutput();
     initWaiter(_merger.listen(outputStream.add));
