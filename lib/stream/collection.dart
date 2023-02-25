@@ -8,36 +8,35 @@ class Aggragate<K, V> extends Stream<Map<K, V>>
         OutputCounter,
         Waiter,
         InputLogger,
-        ValueCache<Map<K, V>>,
-        HasDataOutput,
-        CacheOutput,
-        Processor {
+        Processor,
+        Disposable,
+        StateValue {
   Aggragate({List<LogConfig<MapEntry<K, V?>>>? loggers}) {
     if (kDebugMode && loggers != null) loggers.forEach(inputLogger);
     initOutputCounter();
-    initCacheOutput();
     initDisposable();
+    initState();
     initWaiter(initProcessor().inputSub);
   }
-
-  Map<K, V> _state = {};
+  @override
+  Map<K, V> value = {};
 
   @override
   processor(input) async* {
     await for (final entry in input) {
       if (entry.value == null) {
-        _state.remove(entry.key);
+        value.remove(entry.key);
       } else {
-        _state[entry.key] = entry.value as V;
+        value[entry.key] = entry.value as V;
       }
-      yield _state;
+      yield value;
     }
   }
 
-  Stream<List<V>> asList() => map((event) => event.values.toList());
-  Stream<Set<V>> asSet() => map((event) => event.values.toSet());
+  Stream<List<V>> asList() => output.map((event) => event.values.toList());
+  Stream<Set<V>> asSet() => output.map((event) => event.values.toSet());
 
-  void clear() => _state = {};
+  void clear() => value = {};
 
   static Aggragate<int, V> fromStreams<V>(List<Stream<V>> streams) {
     var collector = Aggragate<int, V>();
@@ -50,6 +49,7 @@ class Aggragate<K, V> extends Stream<Map<K, V>>
   @override
   void dispose() {
     disposeProcessor();
+    disposeState();
   }
 }
 
