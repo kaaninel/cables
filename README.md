@@ -1,7 +1,6 @@
-This library helps you use full potential of dart's streams for state
-management. It provides primitives for duplex streams such as Input, Output and
-Passthrough. You can describe a module's inputs, outputs and basic behaivor via
-these primitives.
+# Kablo
+
+Welcome to Kablo, a powerful library that helps you harness the full potential of Dart's streams for state management. With Kablo, you can easily create and manage duplex streams, define module inputs and outputs, and leverage various mixins for additional functionality.
 
 ## Installation
 
@@ -38,34 +37,32 @@ void main() {
 
 For detailed documentation on each class, please refer to the following files:
 
-- [Controller](docs/Controller.md)
-- [Waiter](docs/Waiter.md)
-- [Input](docs/Input.md)
-- [Output](docs/Output.md)
-- [Passthrough](docs/Passthrough.md)
-- [Disposable](docs/Disposable.md)
-- [Processor](docs/Processor.md)
-- [StateValue](docs/StateValue.md)
-- [InputLogger](docs/InputLogger.md)
-- [OutputLogger](docs/OutputLogger.md)
-- [InputCounter](docs/InputCounter.md)
-- [OutputCounter](docs/OutputCounter.md)
-- [LogConfig](docs/LogConfig.md)
-- [PrintLog](docs/PrintLog.md)
-- [InspectLog](docs/InspectLog.md)
-- [Lag](docs/Lag.md)
-- [Pipe](docs/Pipe.md)
-- [Snapshot](docs/Snapshot.md)
-- [Point](docs/Point.md)
-- [Aggragate](docs/Aggragate.md)
-- [Merge](docs/Merge.md)
-- [GroupBy](docs/GroupBy.md)
-- [SnapshotExtension](docs/SnapshotExtension.md)
-- [PipeExtension](docs/PipeExtension.md)
-- [AggregateExtension](docs/AggregateExtension.md)
-- [AggregateListExtension](docs/AggregateListExtension.md)
-- [MergeExtension](docs/MergeExtension.md)
-- [MergeIterableExtension](docs/MergeIterableExtension.md)
-- [GroupByListExtension](docs/GroupByListExtension.md)
-- [GroupByListsExtension](docs/GroupByListsExtension.md)
-- [asyncBuilder](docs/asyncBuilder.md)
+### Classes
+- [Aggragate](docs/classes/Aggragate.md)
+- [Controller](docs/classes/Controller.md)
+- [GroupBy](docs/classes/GroupBy.md)
+- [Merge](docs/classes/Merge.md)
+- [Pipe](docs/classes/Pipe.md)
+- [asyncBuilder](docs/classes/asyncBuilder.md)
+
+### Mixins
+- [Disposable](docs/mixins/Disposable.md)
+- [Input](docs/mixins/Input.md)
+- [InputCounter](docs/mixins/InputCounter.md)
+- [InputLogger](docs/mixins/InputLogger.md)
+- [Lag](docs/mixins/Lag.md)
+- [LogConfig](docs/mixins/LogConfig.md)
+- [Output](docs/mixins/Output.md)
+
+### Extensions
+- [AggregateExtension](docs/extensions/AggregateExtension.md)
+- [AggregateListExtension](docs/extensions/AggregateListExtension.md)
+- [GroupByListExtension](docs/extensions/GroupByListExtension.md)
+- [GroupByListsExtension](docs/extensions/GroupByListsExtension.md)
+- [MergeExtension](docs/extensions/MergeExtension.md)
+- [MergeIterableExtension](docs/extensions/MergeIterableExtension.md)
+- [PipeExtension](docs/extensions/PipeExtension.md)
+
+## Note
+
+This documentation is AI-generated and may contain inaccuracies. Please refer to the source code and official documentation for the most accurate and up-to-date information.
