@@ -43,7 +43,7 @@ For detailed documentation on each class, please refer to the following files:
 - [GroupBy](docs/classes/GroupBy.md)
 - [Merge](docs/classes/Merge.md)
 - [Pipe](docs/classes/Pipe.md)
-- [asyncBuilder](docs/classes/asyncBuilder.md)
+- [asyncBuilder](docs/functions/asyncBuilder.md)
 
 ### Mixins
 - [Disposable](docs/mixins/Disposable.md)
