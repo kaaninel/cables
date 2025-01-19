@@ -1,5 +1,6 @@
 part of '../kablo.dart';
 
+/// The `Input` mixin provides a `StreamSink` interface for adding events to the input stream.
 mixin Input<T> implements StreamSink<T> {
   final StreamController<T> inputStream = StreamController.broadcast();
 
@@ -20,6 +21,7 @@ mixin Input<T> implements StreamSink<T> {
   Future<void> get done => inputStream.done;
 }
 
+/// The `Output` mixin provides an output stream for a class, allowing other classes to listen to the output stream and receive events.
 mixin Output<T> on Stream<T> {
   final StreamController<T> outputStream = StreamController.broadcast();
 
@@ -34,6 +36,7 @@ mixin Output<T> on Stream<T> {
           onError: onError, onDone: onDone, cancelOnError: cancelOnError);
 }
 
+/// The `Passthrough` mixin connects the input stream to the output stream, allowing events to pass through from input to output.
 mixin Passthrough<T> on Input<T>, Output<T> {
   late final StreamSubscription<T> _passthroughSubscription;
   StreamSubscription<T> initPassthrough() {
@@ -46,12 +49,14 @@ mixin Passthrough<T> on Input<T>, Output<T> {
   }
 }
 
+/// The `Disposable` mixin provides a mechanism to dispose of resources when they are no longer needed.
 mixin Disposable<T> on Input<T> {
   void initDisposable() => inputStream.done.then((value) => dispose());
 
   void dispose();
 }
 
+/// The `DuplexSubscription` class represents a pair of stream subscriptions for input and output streams.
 class DuplexSubscription<T, Q> {
   final StreamSubscription<T> inputSub;
   final StreamSubscription<Q> outputSub;
@@ -59,6 +64,7 @@ class DuplexSubscription<T, Q> {
   const DuplexSubscription(this.inputSub, this.outputSub);
 }
 
+/// The `Processor` mixin provides a mechanism to process input streams and yield output streams.
 mixin Processor<T, Q> on Input<T>, Disposable<T>, Output<Q> {
   late final DuplexSubscription<T, Q> _processorSubscription;
   DuplexSubscription<T, Q> initProcessor() {

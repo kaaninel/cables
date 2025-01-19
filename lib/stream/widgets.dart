@@ -1,9 +1,12 @@
 part of '../kablo.dart';
 
+/// Default widget to display when there is no data.
 Widget noDataDefault(BuildContext ctx, void value, Widget? child) =>
     Container();
 
+/// Extension on `Snapshot` to provide widget builders for stream data.
 extension SnapshotWidget<T> on Snapshot<T> {
+  /// Creates a `StreamBuilder` with the given `AsyncWidgetBuilder`.
   StreamBuilder<T?> builderOld({
     Key? key,
     required AsyncWidgetBuilder<T?> builder,
@@ -12,6 +15,8 @@ extension SnapshotWidget<T> on Snapshot<T> {
         builder: builder, initialData: value, stream: this, key: key);
   }
 
+  /// Creates a `StreamBuilder` with the given `ValueWidgetBuilder`.
+  /// Displays a progress indicator while waiting for data, and a default widget when there is no data.
   StreamBuilder<T?> builder({
     Key? key,
     required ValueWidgetBuilder<T> builder,
@@ -33,7 +38,9 @@ extension SnapshotWidget<T> on Snapshot<T> {
           key: key);
 }
 
+/// Extension on `Aggragate` to provide widget builders for aggregated stream data.
 extension AggragateWidget<K, V> on Aggragate<K, V> {
+  /// Creates a `StreamBuilder` with the given `AsyncWidgetBuilder` for the aggregated set of values.
   StreamBuilder<Set<V>> builder({
     Key? key,
     required AsyncWidgetBuilder<Set<V>> builder,
@@ -41,9 +48,12 @@ extension AggragateWidget<K, V> on Aggragate<K, V> {
       StreamBuilder<Set<V>>(builder: builder, stream: asSet(), key: key);
 }
 
+/// Default error widget to display when there is an error.
 Widget defaultError(FlutterErrorDetails details) =>
     Text(details.exceptionAsString());
 
+/// Creates an `AsyncWidgetBuilder` with the given parameters.
+/// Displays a progress indicator while waiting for data, an error widget when there is an error, and a default widget when there is no data.
 AsyncWidgetBuilder<T> asyncBuilder<T>({
   Widget waiting = const CircularProgressIndicator(),
   ErrorWidgetBuilder error = defaultError,
