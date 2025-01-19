@@ -3,11 +3,12 @@ import 'package:kablo/kablo.dart';
 
 void main() {
   group('Pipe', () {
-    test('add method', () {
+    test('add method', () async {
       final pipe = Pipe<int>();
       pipe.add(1);
       pipe.add(2);
       pipe.add(3);
+      await Future.delayed(const Duration(milliseconds: 100));
 
       expect(pipe.inputCount, 3);
     });
@@ -24,7 +25,7 @@ void main() {
       pipe.add(2);
       pipe.add(3);
 
-      await Future.delayed(Duration(milliseconds: 100));
+      await Future.delayed(const Duration(milliseconds: 100));
 
       expect(values, [1, 2, 3]);
     });

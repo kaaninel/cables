@@ -9,31 +9,32 @@ void main() {
       aggragate = Aggragate<int, String>();
     });
 
-    test('add method', () {
-      aggragate.add(MapEntry(1, 'one'));
-      expect(aggragate.value, {1: 'one'});
+    test('add method', () async {
+      aggragate.add(const MapEntry(1, 'one'));
+      expect(await aggragate.first, {1: 'one'});
 
-      aggragate.add(MapEntry(2, 'two'));
-      expect(aggragate.value, {1: 'one', 2: 'two'});
+      aggragate.add(const MapEntry(2, 'two'));
+      expect(await aggragate.first, {1: 'one', 2: 'two'});
 
-      aggragate.add(MapEntry(1, null));
-      expect(aggragate.value, {2: 'two'});
+      aggragate.add(const MapEntry(1, null));
+      expect(await aggragate.first, {2: 'two'});
     });
 
     test('asList method', () async {
-      aggragate.add(MapEntry(1, 'one'));
-      aggragate.add(MapEntry(2, 'two'));
-
-      final list = await aggragate.asList().first;
-      expect(list, ['one', 'two']);
+      aggragate.add(const MapEntry(1, 'one'));
+      aggragate.add(const MapEntry(2, 'two'));
+      final lists = aggragate.asList().asPipe();
+      expect(await lists.first, ['one']);
+      expect(await lists.first, ['one', 'two']);
     });
 
     test('asSet method', () async {
-      aggragate.add(MapEntry(1, 'one'));
-      aggragate.add(MapEntry(2, 'two'));
+      aggragate.add(const MapEntry(1, 'one'));
+      aggragate.add(const MapEntry(2, 'two'));
 
-      final set = await aggragate.asSet().first;
-      expect(set, {'one', 'two'});
+      final set = aggragate.asSet().asPipe();
+      expect(await set.first, {'one'});
+      expect(await set.first, {'one', 'two'});
     });
   });
 }

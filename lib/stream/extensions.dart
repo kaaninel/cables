@@ -28,8 +28,3 @@ extension GroupByListExtension<V> on List<V> {
   GroupBy<int, V> asGroupBy(Stream<int> Function(V e) builder) =>
       GroupBy.fromList(this, builder);
 }
-
-extension GroupByListsExtension<V> on Stream<List<V>> {
-  Stream<GroupBy<int, V>> asGroupBy(Stream<int> Function(V e) builder) =>
-      GroupBy.fromLists(this, builder);
-}

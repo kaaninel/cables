@@ -1,4 +1,4 @@
-import 'package:test/test.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:kablo/kablo.dart';
 
 void main() {
@@ -12,12 +12,11 @@ void main() {
       groupBy.add('banana');
       groupBy.add('cherry');
 
-      await Future.delayed(Duration(milliseconds: 100));
+      await Future.delayed(const Duration(milliseconds: 100));
 
       expect(groupBy.value, {
         5: ['apple'],
-        6: ['banana'],
-        6: ['cherry'],
+        6: ['banana', 'cherry'],
       });
     });
 
@@ -29,36 +28,12 @@ void main() {
         },
       );
 
-      await Future.delayed(Duration(milliseconds: 100));
+      await Future.delayed(const Duration(milliseconds: 100));
 
       expect(groupBy.value, {
         5: ['apple'],
-        6: ['banana'],
-        6: ['cherry'],
+        6: ['banana', 'cherry'],
       });
-    });
-
-    test('fromLists method', () async {
-      final groupByStream = GroupBy.fromLists(
-        Stream.fromIterable([
-          ['apple', 'banana'],
-          ['cherry', 'date'],
-        ]),
-        (value) async* {
-          yield value.length;
-        },
-      );
-
-      await Future.delayed(Duration(milliseconds: 100));
-
-      await for (final groupBy in groupByStream) {
-        expect(groupBy.value, {
-          5: ['apple'],
-          6: ['banana'],
-          6: ['cherry'],
-          4: ['date'],
-        });
-      }
     });
   });
 }
