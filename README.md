@@ -33,6 +33,16 @@ void main() {
 }
 ```
 
+## Running Unit Tests
+
+To run the unit tests for this project, use the following command:
+
+```sh
+flutter test
+```
+
+This will execute all the tests in the `test` directory and display the results in the console.
+
 ## Detailed Class Documentation
 
 For detailed documentation on each class, please refer to the following files:
