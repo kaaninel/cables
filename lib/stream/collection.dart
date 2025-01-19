@@ -36,10 +36,10 @@ class Aggragate<K, V> extends Stream<Map<K, V>>
   }
 
   /// Returns a stream of the map's values as a list.
-  Stream<List<V>> asList() => output.map((event) => event.values.toList());
+  Stream<List<V>> asList() => map((event) => event.values.toList());
 
   /// Returns a stream of the map's values as a set.
-  Stream<Set<V>> asSet() => output.map((event) => event.values.toSet());
+  Stream<Set<V>> asSet() => map((event) => event.values.toSet());
 
   /// Clears the map.
   void clear() => value = {};
@@ -166,8 +166,4 @@ class GroupBy<K, V> extends Stream<Map<K, List<V>>>
     instance.addStream(Stream.fromIterable(input));
     return instance;
   }
-
-  static Stream<GroupBy<int, V>> fromLists<V>(
-          Stream<List<V>> inputs, Stream<int> Function(V e) builder) =>
-      inputs.map((input) => fromList(input, builder));
 }

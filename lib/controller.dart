@@ -37,6 +37,7 @@ abstract class Controller<T, S> extends Stream<S>
   void dispose() {
     disposeState();
     disposeProcessor();
+    close();
   }
 
   /// Abstract method to process a task and return a stream of output values.
